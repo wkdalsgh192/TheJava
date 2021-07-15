@@ -13,17 +13,15 @@ public class App3 {
             Thread.sleep(2000L);
             return "Hello";
         };
-/*
         Future<String> submit = executorService.submit(hello);
         System.out.println(submit.isDone());
         System.out.println("Started");
 
-        submit.get();
+        System.out.println(submit.get());
 
         System.out.println(submit.isDone());
         System.out.println("End!!");
         executorService.shutdown();
-        */
 /*
 
         Future<String> submit = executorService.submit(hello);
@@ -37,7 +35,7 @@ public class App3 {
         executorService.shutdown();
 */
 
-        Callable<String> java = () -> {
+/*        Callable<String> java = () -> {
             Thread.sleep(3000L);
             return "Java";
         };
@@ -57,7 +55,7 @@ public class App3 {
             } catch (ExecutionException e) {
                 e.printStackTrace();
             }
-        });
+        });*/
 
     }
 }
