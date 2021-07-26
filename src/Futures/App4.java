@@ -6,16 +6,16 @@ import java.util.concurrent.*;
 public class App4 {
 
     public static void main(String[] args) throws ExecutionException, InterruptedException {
-        /* future를 이용한 기존 코딩 방식으로 할 수 없는 작업이 많아졌다.
+        // future를 이용한 기존 코딩 방식으로 할 수 없는 작업이 많아졌다.
         ExecutorService executorService = Executors.newFixedThreadPool(4);
-        Future<String> future =  executorService.submit(() -> "hello");
+        Future<String> future0 =  executorService.submit(() -> "hello");
 
          // TODO future를 이용한 작업들
 
-        future.get();
-    */
+        future0.get();
+
         // CompeletableFuture는 executorService가 필요없다. 기본적으로 ForkJoinPool을 사용하기 때문 하지만 원한다면 언제든지 만들어 줄 수 있다.
-        ExecutorService executorService = Executors.newFixedThreadPool(4);
+        // ExecutorService executorService = Executors.newFixedThreadPool(4);
         CompletableFuture<String> future;
         future = new CompletableFuture<>();
         future.complete("Minho");
