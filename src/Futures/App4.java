@@ -1,7 +1,10 @@
 package Futures;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
 
 public class App4 {
 
@@ -54,5 +57,56 @@ public class App4 {
         System.out.println(future4.get());
 
 
+        CompletableFuture<String> hello = CompletableFuture.supplyAsync(() -> {
+            System.out.println("Hello " + Thread.currentThread().getName());
+            return "Hello";
+        });
+
+        CompletableFuture<String> world = getWorld(hello.get());
+
+        // when two or more futures are dependent each other
+        CompletableFuture<String> future5 = hello.thenCompose(App4::getWorld);
+        System.out.println(future5.get());
+
+        // when they are independent
+        CompletableFuture<String> future6 = hello.thenCombine(world, (h, w) -> h + " " + w);
+        System.out.println(future6.get());
+
+        // execute a callback after the given futures are completed - why void?
+        CompletableFuture<Void> future7 = CompletableFuture.allOf(hello, world)
+                .thenAccept(System.out::println);
+
+        future7.get();
+
+        List<CompletableFuture> futures = Arrays.asList(hello, world);
+        CompletableFuture[] futuresArray = futures.toArray(new CompletableFuture[futures.size()]);
+
+        CompletableFuture<List<Object>> results = CompletableFuture.allOf(futuresArray)
+                .thenApply(v -> futures.stream()
+                        .map(CompletableFuture::join)
+                        .collect(Collectors.toList())
+                );
+
+        results.get().forEach(System.out::println);
+
+
+        // Handling Exception
+        CompletableFuture<String> exception0 = CompletableFuture.supplyAsync(() -> {
+            if (true) throw new IllegalArgumentException();
+
+            System.out.println("Hello " + Thread.currentThread().getName());
+            return "Hello!";
+        }).exceptionally(ex -> {
+            return "Error!";
+        });
+
+        System.out.println(exception0.get());
     }
+
+    private static CompletableFuture<String> getWorld(String message) {
+        return CompletableFuture.supplyAsync(() -> {
+            System.out.println("World " + Thread.currentThread().getName());
+            return message + " World";
+        });
+    };
 }
